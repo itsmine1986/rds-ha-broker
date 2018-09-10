@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "rds-ha-broker", "rds-ha-broker\rds-ha-broker.deployproj", "{46D222A8-2175-417F-8225-E19809CF064F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{46D222A8-2175-417F-8225-E19809CF064F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46D222A8-2175-417F-8225-E19809CF064F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46D222A8-2175-417F-8225-E19809CF064F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46D222A8-2175-417F-8225-E19809CF064F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {64821CAB-A27F-4F95-B409-8023F72E5444}
+	EndGlobalSection
+EndGlobal
