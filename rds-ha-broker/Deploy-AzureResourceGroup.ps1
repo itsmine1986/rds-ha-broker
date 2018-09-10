@@ -59,7 +59,7 @@ if ($UploadArtifacts) {
         $StorageAccountName = 'stage' + ((Get-AzureRmContext).Subscription.SubscriptionId).Replace('-', '').substring(0, 19)
     }
 
-    #$StorageAccount = (Get-AzureRmStorageAccount | Where-Object{$_.StorageAccountName -eq $StorageAccountName})
+    $StorageAccount = (Get-AzureRmStorageAccount | Where-Object{$_.StorageAccountName -eq $StorageAccountName})
 
     # Create the storage account if it doesn't already exist
     if ($StorageAccount -eq $null) {
