@@ -3,10 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "existingDomainName": {
-      "value": null
+      "value": "adm.scalesquad.io"
     },
     "primaryDbConnectionString": {
-      "value": null
+      "value": "Server=tcp:rdsservertest1.database.windows.net,1433;Initial Catalog=rdsdatabase;Persist Security Info=False;User ID=insa;Password=Letme1nn@12345;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    },
+    "existingAdminPassword": {
+      "value": "Letme1nn12345"
     }
   }
 }
