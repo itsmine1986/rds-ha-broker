@@ -98,7 +98,7 @@
   "variables": {
     "brokerVmName": "[concat(variables('vmPrefix'), '02')]",
     "brokerNicName": "[concat('Nc',variables('brokerVmName'))]",
-    "storageAccountName": "",
+    "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'Rdsh02igacr')]",
     "storageAccountType": "Standard_LRS",
     "sqlClientUrl": "http://go.microsoft.com/fwlink/?LinkID=239648&clcid=0x409",
     "vmPrefix": "VmWTRdcbh",
