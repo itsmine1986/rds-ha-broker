@@ -24,7 +24,7 @@
     },
     "existingAdminUsername": {
       "type": "string",
-      "defaultValue": "ssubramanian",
+      "defaultValue": "cloudAdmin",
       "metadata": {
         "description": "Name of domain user account with administrative priveledges to manage RDS deployment"
       }
@@ -51,14 +51,14 @@
     },
     "existingSubnetName": {
       "type": "string",
-      "defaultValue": "default",
+      "defaultValue": "Subnet",
       "metadata": {
         "description": "Subnet name"
       }
     },
     "existingVnetName": {
       "type": "string",
-      "defaultValue": "VNAdminZone",
+      "defaultValue": "vnet",
       "metadata": {
         "description": "Virtual network name"
       }
@@ -92,7 +92,7 @@
       "metadata": {
         "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
       },
-      "defaultValue": "https://raw.githubusercontent.com/itsmine1986/rds-ha-broker/master/rds-ha-broker/"
+      "defaultValue": "https://raw.githubusercontent.com/Azure/AzureStack-QuickStart-Templates/master/rds-deployment-ha-broker/"
     }
   },
   "variables": {
@@ -127,6 +127,7 @@
         "accountType": "[variables('storageAccountType')]"
       }
     },
+    {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('brokerNicName')]",
@@ -144,7 +145,9 @@
             }
           }
         ]
+      }
     },
+    {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('brokerVmName')]",
@@ -173,71 +176,76 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "MdOVmWTRdcbh02",
+            "name": "osdisk",
             "caching": "ReadWrite",
             "createOption": "FromImage",
             "managedDisk": {
               "storageAccountType": "Standard_LRS"
             }
-          },
-          "networkProfile": {
-            "networkInterfaces": [
-              {
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('brokerNicName'))]"
-              }
-            ]
           }
-        }
-      },
-        "apiVersion": "2015-06-15",
-        "type": "Microsoft.Compute/virtualMachines/extensions",
-        "name": "[concat(variables('brokerVmName'),'/configuration')]",
-        "location": "[resourceGroup().location]",
-        "dependsOn": [
-          "[resourceId('Microsoft.Compute/virtualMachines',variables('brokerVmName'))]"
-        ],
-        "properties": {
-          "publisher": "Microsoft.Powershell",
-          "type": "DSC",
-          "typeHandlerVersion": "2.75",
-          "autoUpgradeMinorVersion": true,
-          "settings": {
-            "modulesUrl": "[concat(parameters('_artifactsLocation'),'/DSC/Configuration.zip')]",
-            "configurationFunction": "Configuration.ps1\\DomainJoin",
-            "properties": {
-              "domainName": "[parameters('existingDomainName')]",
-              "adminCreds": {
-                "UserName": "[parameters('existingAdminUsername')]",
-                "Password": "PrivateSettingsRef:adminPassword"
-              }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('brokerNicName'))]"
             }
-          },
-          "protectedSettings": {
-            "Items": {
-              "adminPassword": "[parameters('existingAdminPassword')]"
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('brokerVmName'),'/configuration')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines',variables('brokerVmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.75",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "modulesUrl": "[concat(parameters('_artifactsLocation'),'/DSC/Configuration.zip')]",
+          "configurationFunction": "Configuration.ps1\\DomainJoin",
+          "properties": {
+            "domainName": "[parameters('existingDomainName')]",
+            "adminCreds": {
+              "UserName": "[parameters('existingAdminUsername')]",
+              "Password": "PrivateSettingsRef:adminPassword"
             }
           }
         },
-        "apiVersion": "2015-06-15",
-        "name": "[concat(variables('brokerVmName'),'/ha-broker-configuration')]",
-        "type": "Microsoft.Compute/virtualMachines/extensions",
-        "location": "[resourceGroup().location]",
-        "dependsOn": [
-          "[concat('Microsoft.Compute/virtualMachines/', variables('brokerVmName'),'/extensions/','configuration')]"
-        ],
-        "properties": {
-          "publisher": "Microsoft.Compute",
-          "type": "CustomScriptExtension",
-          "typeHandlerVersion": "1.8",
-          "autoUpgradeMinorVersion": true,
-          "settings": {
-            "fileUris": [
-              "[concat(variables('scriptLocation'), '/', variables('scriptFileName'))]"
-            ]
-          },
-          "protectedSettings": {
-            "commandToExecute": "[concat( 'powershell -noninteractive -executionpolicy bypass -file ', variables('scriptFileName'), variables('scriptParameters'), ' >> script.log 2>&1' )]"
+        "protectedSettings": {
+          "Items": {
+            "adminPassword": "[parameters('existingAdminPassword')]"
           }
         }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "name": "[concat(variables('brokerVmName'),'/ha-broker-configuration')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('brokerVmName'),'/extensions/','configuration')]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.8",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[concat(variables('scriptLocation'), '/', variables('scriptFileName'))]"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat( 'powershell -noninteractive -executionpolicy bypass -file ', variables('scriptFileName'), variables('scriptParameters'), ' >> script.log 2>&1' )]"
+        }
+      }
+    }
   ]
 }
